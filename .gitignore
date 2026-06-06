@@ -12,3 +12,6 @@ build/
 .coverage
 .mypy_cache/
 .ruff_cache/
+
+# Notas personales de estudio (NO se suben al repo)
+NOTAS.md
