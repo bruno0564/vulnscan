@@ -1,6 +1,9 @@
+"""Check de rutas expuestas: prueba paths sensibles comunes (.git, .env, admin…)."""
+
 import requests
 
-from ..types import Finding
+from ..types import Finding, Severity
+from .base import ScanContext, register
 
 COMMON_PATHS = [
     "/.git/HEAD",
@@ -26,25 +29,27 @@ COMMON_PATHS = [
 ]
 
 
-def check_directories(base_url: str, session: requests.Session) -> list[Finding]:
+@register
+def check_directories(ctx: ScanContext) -> list[Finding]:
     findings: list[Finding] = []
-    base = base_url.rstrip("/")
+    base = ctx.url.rstrip("/")
 
     for path in COMMON_PATHS:
         try:
-            r = session.get(f"{base}{path}", timeout=4, allow_redirects=False)
-            if r.status_code in (200, 403):
-                findings.append(
-                    {
-                        "type": "exposed_path",
-                        "severity": "low" if r.status_code == 403 else "medium",
-                        "path": path,
-                        "status": r.status_code,
-                        "detail": f"HTTP {r.status_code}",
-                    }
-                )
+            r = ctx.session.get(f"{base}{path}", timeout=4, allow_redirects=False)
         except requests.RequestException:
             # Path inaccesible o timeout: lo ignoramos y seguimos con el resto.
             continue
+
+        if r.status_code in (200, 403):
+            findings.append(
+                {
+                    "type": "exposed_path",
+                    "severity": Severity.LOW if r.status_code == 403 else Severity.MEDIUM,
+                    "path": path,
+                    "status": r.status_code,
+                    "detail": f"HTTP {r.status_code}",
+                }
+            )
 
     return findings

@@ -1,6 +1,7 @@
-import requests
+"""Check de cabeceras: detecta cabeceras de seguridad ausentes y fugas de info."""
 
-from ..types import Finding
+from ..types import Finding, Severity
+from .base import ScanContext, register
 
 SECURITY_HEADERS = {
     "Strict-Transport-Security": "Missing HSTS — forces HTTPS",
@@ -18,28 +19,30 @@ DANGEROUS_HEADERS = {
 }
 
 
-def check_headers(response: requests.Response) -> list[Finding]:
+@register
+def check_headers(ctx: ScanContext) -> list[Finding]:
     findings: list[Finding] = []
+    headers = ctx.response.headers
 
     for header, desc in SECURITY_HEADERS.items():
-        if header not in response.headers:
+        if header not in headers:
             findings.append(
                 {
                     "type": "missing_header",
-                    "severity": "medium",
+                    "severity": Severity.MEDIUM,
                     "header": header,
                     "detail": desc,
                 }
             )
 
     for header, desc in DANGEROUS_HEADERS.items():
-        if header in response.headers:
+        if header in headers:
             findings.append(
                 {
                     "type": "info_disclosure",
-                    "severity": "low",
+                    "severity": Severity.LOW,
                     "header": header,
-                    "value": response.headers[header],
+                    "value": headers[header],
                     "detail": desc,
                 }
             )

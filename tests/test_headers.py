@@ -3,19 +3,22 @@
 import requests
 import responses
 
+from vulnscan.checks.base import ScanContext
 from vulnscan.checks.headers import check_headers
 
 
-def _get(url: str) -> requests.Response:
-    """Hace un GET real contra una URL ya mockeada por @responses.activate."""
-    return requests.get(url, timeout=5)
+def _context(url: str) -> ScanContext:
+    """Construye un ScanContext con una respuesta ya mockeada por @responses.activate."""
+    session = requests.Session()
+    response = session.get(url, timeout=5)
+    return ScanContext(url=url, session=session, response=response)
 
 
 @responses.activate
 def test_missing_security_headers_are_flagged() -> None:
     responses.add(responses.GET, "https://test.local", headers={}, status=200)
 
-    findings = check_headers(_get("https://test.local"))
+    findings = check_headers(_context("https://test.local"))
 
     types = {f["type"] for f in findings}
     assert "missing_header" in types
@@ -35,7 +38,7 @@ def test_present_headers_are_not_flagged_as_missing() -> None:
     }
     responses.add(responses.GET, "https://secure.local", headers=secure, status=200)
 
-    findings = check_headers(_get("https://secure.local"))
+    findings = check_headers(_context("https://secure.local"))
 
     missing = [f for f in findings if f["type"] == "missing_header"]
     assert missing == []
@@ -50,7 +53,7 @@ def test_info_disclosure_header_is_flagged() -> None:
         status=200,
     )
 
-    findings = check_headers(_get("https://leaky.local"))
+    findings = check_headers(_context("https://leaky.local"))
 
     server = [f for f in findings if f.get("header") == "Server"]
     assert server and server[0]["severity"] == "low"

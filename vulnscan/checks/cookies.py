@@ -1,12 +1,14 @@
-import requests
+"""Check de cookies: flags de seguridad ausentes (Secure, HttpOnly, SameSite)."""
 
-from ..types import Finding
+from ..types import Finding, Severity
+from .base import ScanContext, register
 
 
-def check_cookies(response: requests.Response) -> list[Finding]:
+@register
+def check_cookies(ctx: ScanContext) -> list[Finding]:
     findings: list[Finding] = []
 
-    for cookie in response.cookies:
+    for cookie in ctx.response.cookies:
         issues: list[str] = []
 
         if not cookie.secure:
@@ -20,7 +22,7 @@ def check_cookies(response: requests.Response) -> list[Finding]:
             findings.append(
                 {
                     "type": "insecure_cookie",
-                    "severity": "medium",
+                    "severity": Severity.MEDIUM,
                     "cookie": cookie.name,
                     "issues": issues,
                 }
