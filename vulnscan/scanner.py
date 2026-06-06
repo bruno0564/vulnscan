@@ -1,13 +1,15 @@
-import requests
 from urllib.parse import urlparse
 
-from .checks.headers import check_headers
+import requests
+
 from .checks.cookies import check_cookies
 from .checks.cors import check_cors
 from .checks.directories import check_directories
+from .checks.headers import check_headers
+from .types import Finding, ScanResult
 
 
-def scan(url: str) -> dict:
+def scan(url: str) -> ScanResult:
     parsed = urlparse(url)
     if not parsed.scheme:
         url = "https://" + url
@@ -15,7 +17,7 @@ def scan(url: str) -> dict:
     session = requests.Session()
     session.headers["User-Agent"] = "vulnscan/0.1 (security scanner)"
 
-    findings = []
+    findings: list[Finding] = []
 
     try:
         response = session.get(url, timeout=8, allow_redirects=True)

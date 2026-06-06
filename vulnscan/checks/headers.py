@@ -1,3 +1,7 @@
+import requests
+
+from ..types import Finding
+
 SECURITY_HEADERS = {
     "Strict-Transport-Security": "Missing HSTS — forces HTTPS",
     "X-Content-Type-Options": "Missing — allows MIME sniffing attacks",
@@ -14,26 +18,30 @@ DANGEROUS_HEADERS = {
 }
 
 
-def check_headers(response):
-    findings = []
+def check_headers(response: requests.Response) -> list[Finding]:
+    findings: list[Finding] = []
 
     for header, desc in SECURITY_HEADERS.items():
         if header not in response.headers:
-            findings.append({
-                "type": "missing_header",
-                "severity": "medium",
-                "header": header,
-                "detail": desc,
-            })
+            findings.append(
+                {
+                    "type": "missing_header",
+                    "severity": "medium",
+                    "header": header,
+                    "detail": desc,
+                }
+            )
 
     for header, desc in DANGEROUS_HEADERS.items():
         if header in response.headers:
-            findings.append({
-                "type": "info_disclosure",
-                "severity": "low",
-                "header": header,
-                "value": response.headers[header],
-                "detail": desc,
-            })
+            findings.append(
+                {
+                    "type": "info_disclosure",
+                    "severity": "low",
+                    "header": header,
+                    "value": response.headers[header],
+                    "detail": desc,
+                }
+            )
 
     return findings

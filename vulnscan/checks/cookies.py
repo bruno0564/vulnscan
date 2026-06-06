@@ -1,8 +1,13 @@
-def check_cookies(response):
-    findings = []
+import requests
+
+from ..types import Finding
+
+
+def check_cookies(response: requests.Response) -> list[Finding]:
+    findings: list[Finding] = []
 
     for cookie in response.cookies:
-        issues = []
+        issues: list[str] = []
 
         if not cookie.secure:
             issues.append("Secure flag missing — cookie sent over HTTP")
@@ -12,11 +17,13 @@ def check_cookies(response):
             issues.append("SameSite not set — CSRF risk")
 
         if issues:
-            findings.append({
-                "type": "insecure_cookie",
-                "severity": "medium",
-                "cookie": cookie.name,
-                "issues": issues,
-            })
+            findings.append(
+                {
+                    "type": "insecure_cookie",
+                    "severity": "medium",
+                    "cookie": cookie.name,
+                    "issues": issues,
+                }
+            )
 
     return findings

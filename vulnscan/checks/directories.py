@@ -1,3 +1,7 @@
+import requests
+
+from ..types import Finding
+
 COMMON_PATHS = [
     "/.git/HEAD",
     "/.env",
@@ -22,22 +26,25 @@ COMMON_PATHS = [
 ]
 
 
-def check_directories(base_url, session):
-    findings = []
+def check_directories(base_url: str, session: requests.Session) -> list[Finding]:
+    findings: list[Finding] = []
     base = base_url.rstrip("/")
 
     for path in COMMON_PATHS:
         try:
             r = session.get(f"{base}{path}", timeout=4, allow_redirects=False)
             if r.status_code in (200, 403):
-                findings.append({
-                    "type": "exposed_path",
-                    "severity": "low" if r.status_code == 403 else "medium",
-                    "path": path,
-                    "status": r.status_code,
-                    "detail": f"HTTP {r.status_code}",
-                })
-        except Exception:
-            pass
+                findings.append(
+                    {
+                        "type": "exposed_path",
+                        "severity": "low" if r.status_code == 403 else "medium",
+                        "path": path,
+                        "status": r.status_code,
+                        "detail": f"HTTP {r.status_code}",
+                    }
+                )
+        except requests.RequestException:
+            # Path inaccesible o timeout: lo ignoramos y seguimos con el resto.
+            continue
 
     return findings
