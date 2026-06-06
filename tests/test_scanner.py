@@ -2,6 +2,7 @@
 
 import re
 
+import requests
 import responses
 
 from vulnscan.scanner import scan
@@ -33,7 +34,7 @@ def test_scan_handles_unreachable_host() -> None:
     responses.add(
         responses.GET,
         "https://down.local/",
-        body=responses.ConnectionError("boom"),
+        body=requests.ConnectionError("boom"),
     )
 
     result = scan("https://down.local/")
