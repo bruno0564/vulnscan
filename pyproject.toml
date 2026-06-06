@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vulnscan"
+version = "0.1.0"
+description = "Web vulnerability scanner built from scratch in Python"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [{ name = "bruno0564" }]
+keywords = ["security", "scanner", "pentesting", "web", "vulnerability"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Topic :: Security",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "requests",
+    "beautifulsoup4",
+    "colorama",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "pytest-cov",
+    "responses",       # mockea peticiones HTTP en los tests
+    "ruff",
+    "mypy",
+    "types-requests",   # stubs de tipos para requests (mypy)
+    "types-colorama",   # stubs de tipos para colorama (mypy)
+    "pre-commit",
+]
+
+[project.scripts]
+vulnscan = "vulnscan.cli:main"
+
+[project.urls]
+Repository = "https://github.com/bruno0564/vulnscan"
+
+[tool.setuptools.packages.find]
+include = ["vulnscan*"]
+
+# --- Calidad de código ---------------------------------------------------
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+# E/F = pyflakes+pycodestyle, I = imports ordenados, B = bugbear,
+# UP = pyupgrade, SIM = simplificaciones, S = seguridad (bandit)
+select = ["E", "F", "I", "B", "UP", "SIM", "S"]
+# S113: requests sin timeout — lo controlamos nosotros; relajamos en tests más abajo
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]  # permite assert en los tests
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_unused_ignores = true
+warn_return_any = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --cov=vulnscan --cov-report=term-missing"
