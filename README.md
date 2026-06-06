@@ -16,17 +16,24 @@ Web vulnerability scanner built from scratch in Python. Checks for common miscon
 
 ```bash
 python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+pip install -e .            # installs the `vulnscan` command
+```
+
+For development (linting, types, tests) install the dev extras instead:
+
+```bash
+pip install -e ".[dev]"
+pre-commit install
 ```
 
 ## Usage
 
 ```bash
 # Basic scan
-python -m vulnscan.cli https://example.com
+vulnscan https://example.com
 
 # JSON output
-python -m vulnscan.cli https://example.com --json
+vulnscan https://example.com --json
 ```
 
 ## Example output
@@ -43,19 +50,36 @@ Findings: 0 high  3 medium  2 low
            Exposes server software and version: Apache/2.4.41
 ```
 
-## Project structure
+## Architecture
+
+Checks are **pluggable**. Each one is a small function registered with
+`@register`, and the scanner discovers them through a registry — so adding a
+check never requires touching `scanner.py`.
 
 ```
 vulnscan/
 ├── vulnscan/
-│   ├── scanner.py       — orchestrates all checks
-│   ├── cli.py           — argument parsing and report output
+│   ├── cli.py            — argument parsing and report output
+│   ├── scanner.py        — fetches the page, runs every registered check
+│   ├── types.py          — Severity, Finding, ScanResult
 │   └── checks/
-│       ├── headers.py   — security and info disclosure headers
-│       ├── cookies.py   — cookie flag analysis
-│       ├── cors.py      — CORS misconfiguration
+│       ├── base.py       — ScanContext + @register registry
+│       ├── headers.py    — security and info disclosure headers
+│       ├── cookies.py    — cookie flag analysis
+│       ├── cors.py       — CORS misconfiguration
 │       └── directories.py — common exposed paths
-└── requirements.txt
+├── tests/                — pytest suite (HTTP mocked, no real network)
+└── pyproject.toml        — packaging + ruff/mypy/pytest config
+```
+
+Want to add a check? See [CONTRIBUTING.md](CONTRIBUTING.md) — it's three steps.
+
+## Development
+
+```bash
+ruff check vulnscan/ tests/    # lint
+mypy vulnscan/ tests/          # static types (strict)
+pytest                         # tests + coverage
 ```
 
 ## Roadmap
