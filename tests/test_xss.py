@@ -51,9 +51,7 @@ def test_unescaped_reflection_is_flagged_per_param() -> None:
 
 @responses.activate
 def test_escaped_reflection_is_not_flagged() -> None:
-    responses.add_callback(
-        responses.GET, re.compile(r"https://app\.local/.*"), callback=_escaping
-    )
+    responses.add_callback(responses.GET, re.compile(r"https://app\.local/.*"), callback=_escaping)
 
     findings = check_xss(_context("https://app.local/s?q=hi"))
 
