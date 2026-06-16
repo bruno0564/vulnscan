@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- HTML report output: `--html FILE` writes a self-contained, styled report
+  (inline CSS, severity badges, summary). All dynamic content is HTML-escaped —
+  a scanner must not inject the very payloads it finds into its own report.
 - Subdomain enumeration check: resolves a wordlist of common subdomains
   (api, dev, staging, admin…) against the target domain via DNS and reports the
   live ones as LOW. Honours `--delay`.

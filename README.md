@@ -45,6 +45,9 @@ vulnscan https://example.com --delay 0.5 --timeout 5
 vulnscan https://example.com --bearer "$TOKEN"
 vulnscan https://example.com --basic admin:s3cret
 vulnscan https://example.com --header "Cookie: session=abc123"
+
+# Write a self-contained HTML report
+vulnscan https://example.com --html report.html
 ```
 
 ## Example output
@@ -72,9 +75,11 @@ vulnscan/
 ├── vulnscan/
 │   ├── cli.py            — argument parsing and report output
 │   ├── scanner.py        — fetches the page, runs every registered check
+│   ├── auth.py           — builds the HTTP session (Bearer / Basic / headers)
+│   ├── report.py         — self-contained HTML report rendering
 │   ├── types.py          — Severity, Finding, ScanResult
 │   └── checks/
-│       ├── base.py       — ScanContext + @register registry
+│       ├── base.py       — ScanContext (+ throttled request) + @register registry
 │       ├── headers.py    — security and info disclosure headers
 │       ├── cookies.py    — cookie flag analysis
 │       ├── cors.py       — CORS misconfiguration
@@ -101,6 +106,6 @@ pytest                         # tests + coverage
 - [x] XSS reflection detection
 - [x] SQL injection basic probing
 - [x] Subdomain enumeration
-- [ ] HTML report output
+- [x] HTML report output
 - [x] Rate limiting / delay between requests
 - [x] Auth support (Bearer token, Basic auth)
