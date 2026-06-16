@@ -3,6 +3,7 @@ import json
 
 from colorama import Fore, Style, init
 
+from .auth import build_session
 from .scanner import scan
 from .types import ScanResult
 
@@ -53,9 +54,26 @@ def main() -> None:
         metavar="SECONDS",
         help="Delay between requests in seconds — be polite, avoid rate limits (default: 0)",
     )
+
+    auth = parser.add_argument_group("authentication")
+    creds = auth.add_mutually_exclusive_group()
+    creds.add_argument("--bearer", metavar="TOKEN", help="Send 'Authorization: Bearer <token>'")
+    creds.add_argument("--basic", metavar="USER:PASS", help="HTTP Basic auth credentials")
+    auth.add_argument(
+        "--header",
+        action="append",
+        default=[],
+        metavar="NAME:VALUE",
+        help="Extra request header (repeatable), e.g. --header 'Cookie: session=abc'",
+    )
     args = parser.parse_args()
 
-    result = scan(args.url, timeout=args.timeout, delay=args.delay)
+    try:
+        session = build_session(bearer=args.bearer, basic=args.basic, headers=args.header)
+    except ValueError as e:
+        parser.error(str(e))
+
+    result = scan(args.url, timeout=args.timeout, delay=args.delay, session=session)
 
     if args.json:
         print(json.dumps(result, indent=2))

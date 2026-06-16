@@ -8,10 +8,9 @@ from urllib.parse import urlparse
 
 import requests
 
+from .auth import USER_AGENT
 from .checks import ScanContext, all_checks
 from .types import SEVERITY_ORDER, Finding, ScanResult, Severity, Summary
-
-USER_AGENT = "vulnscan/0.1 (security scanner)"
 
 
 def scan(
