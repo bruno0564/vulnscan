@@ -77,8 +77,7 @@ def check_sqli(ctx: ScanContext) -> list[Finding]:
                     "param": name,
                     "payload": payload,
                     "detail": (
-                        f"Parameter '{name}' triggers a {db} error — "
-                        f"possible SQL injection"
+                        f"Parameter '{name}' triggers a {db} error — possible SQL injection"
                     ),
                 }
             )

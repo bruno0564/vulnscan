@@ -41,6 +41,7 @@ class Finding(TypedDict, total=False):
     issues: list[str]
     param: str  # parámetro de query afectado (checks de inyección)
     payload: str  # payload que disparó el hallazgo
+    host: str  # host afectado (enumeración de subdominios)
 
 
 class Summary(TypedDict):

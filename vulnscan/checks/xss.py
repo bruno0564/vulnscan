@@ -60,8 +60,7 @@ def check_xss(ctx: ScanContext) -> list[Finding]:
                     "param": name,
                     "payload": payload,
                     "detail": (
-                        f"Parameter '{name}' is reflected unescaped — "
-                        f"possible reflected XSS"
+                        f"Parameter '{name}' is reflected unescaped — possible reflected XSS"
                     ),
                 }
             )

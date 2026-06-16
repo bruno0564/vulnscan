@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Subdomain enumeration check: resolves a wordlist of common subdomains
+  (api, dev, staging, admin…) against the target domain via DNS and reports the
+  live ones as LOW. Honours `--delay`.
 - Error-based SQL injection check: injects a quote into each query parameter
   and flags DB error signatures (MySQL, PostgreSQL, MSSQL, Oracle, SQLite) that
   weren't already present in the baseline response. Reports HIGH.
