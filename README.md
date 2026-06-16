@@ -34,6 +34,9 @@ vulnscan https://example.com
 
 # JSON output
 vulnscan https://example.com --json
+
+# Be polite: wait 0.5s between requests and cap each request at 5s
+vulnscan https://example.com --delay 0.5 --timeout 5
 ```
 
 ## Example output
@@ -88,5 +91,5 @@ pytest                         # tests + coverage
 - [ ] SQL injection basic probing
 - [ ] Subdomain enumeration
 - [ ] HTML report output
-- [ ] Rate limiting / delay between requests
+- [x] Rate limiting / delay between requests
 - [ ] Auth support (Bearer token, Basic auth)

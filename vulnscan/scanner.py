@@ -14,19 +14,32 @@ from .types import SEVERITY_ORDER, Finding, ScanResult, Severity, Summary
 USER_AGENT = "vulnscan/0.1 (security scanner)"
 
 
-def scan(url: str) -> ScanResult:
+def scan(
+    url: str,
+    *,
+    timeout: float = 8.0,
+    delay: float = 0.0,
+    session: requests.Session | None = None,
+) -> ScanResult:
     if not urlparse(url).scheme:
         url = "https://" + url
 
-    session = requests.Session()
-    session.headers["User-Agent"] = USER_AGENT
+    if session is None:
+        session = requests.Session()
+        session.headers["User-Agent"] = USER_AGENT
 
     try:
-        response = session.get(url, timeout=8, allow_redirects=True)
+        response = session.get(url, timeout=timeout, allow_redirects=True)
     except requests.RequestException as e:
         return {"error": str(e), "url": url, "findings": []}
 
-    ctx = ScanContext(url=url, session=session, response=response)
+    ctx = ScanContext(
+        url=url,
+        session=session,
+        response=response,
+        timeout=timeout,
+        delay=delay,
+    )
 
     findings: list[Finding] = []
     for check in all_checks():

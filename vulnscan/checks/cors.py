@@ -13,10 +13,10 @@ def check_cors(ctx: ScanContext) -> list[Finding]:
     findings: list[Finding] = []
 
     try:
-        r = ctx.session.options(
+        r = ctx.request(
+            "OPTIONS",
             ctx.url,
             headers={"Origin": PROBE_ORIGIN, "Access-Control-Request-Method": "GET"},
-            timeout=5,
         )
     except requests.RequestException:
         # Un fallo de red en este check no debe abortar el scan completo.

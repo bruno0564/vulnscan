@@ -5,6 +5,9 @@ import requests
 from ..types import Finding, Severity
 from .base import ScanContext, register
 
+# Cada path es una petición extra: muchas en serie pueden parecer abuso, por eso
+# se canalizan por ctx.request(), que aplica el retardo de cortesía configurable.
+
 COMMON_PATHS = [
     "/.git/HEAD",
     "/.env",
@@ -36,7 +39,7 @@ def check_directories(ctx: ScanContext) -> list[Finding]:
 
     for path in COMMON_PATHS:
         try:
-            r = ctx.session.get(f"{base}{path}", timeout=4, allow_redirects=False)
+            r = ctx.request("GET", f"{base}{path}", allow_redirects=False)
         except requests.RequestException:
             # Path inaccesible o timeout: lo ignoramos y seguimos con el resto.
             continue

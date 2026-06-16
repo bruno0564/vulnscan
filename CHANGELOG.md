@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Rate limiting: `--delay` waits N seconds between requests and `--timeout`
+  caps each request. Both flow through a new `ScanContext.request()` helper —
+  a single choke point used by every check that makes extra HTTP calls.
 - Packaging via `pyproject.toml` with a `vulnscan` console entry point.
 - Quality tooling: ruff (lint + format), mypy (strict), pytest with coverage.
 - `pre-commit` hooks and a GitHub Actions CI workflow.
