@@ -12,6 +12,7 @@ Web vulnerability scanner built from scratch in Python. Checks for common miscon
 | CORS misconfiguration | Medium / High | Wildcard origin, origin reflection with credentials |
 | Exposed paths | Low / Medium | .git, .env, admin panels, debug endpoints, backups |
 | Reflected XSS | Medium | Query params echoed back into the page unescaped |
+| SQL injection | High | DB error signatures triggered by injecting a quote into params |
 
 ## Install
 
@@ -77,7 +78,8 @@ vulnscan/
 │       ├── cookies.py    — cookie flag analysis
 │       ├── cors.py       — CORS misconfiguration
 │       ├── directories.py — common exposed paths
-│       └── xss.py         — reflected XSS probing
+│       ├── xss.py         — reflected XSS probing
+│       └── sqli.py        — error-based SQL injection probing
 ├── tests/                — pytest suite (HTTP mocked, no real network)
 └── pyproject.toml        — packaging + ruff/mypy/pytest config
 ```
@@ -95,7 +97,7 @@ pytest                         # tests + coverage
 ## Roadmap
 
 - [x] XSS reflection detection
-- [ ] SQL injection basic probing
+- [x] SQL injection basic probing
 - [ ] Subdomain enumeration
 - [ ] HTML report output
 - [x] Rate limiting / delay between requests

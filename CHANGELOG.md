@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Error-based SQL injection check: injects a quote into each query parameter
+  and flags DB error signatures (MySQL, PostgreSQL, MSSQL, Oracle, SQLite) that
+  weren't already present in the baseline response. Reports HIGH.
 - Reflected XSS check: injects a unique marker into each query parameter and
   flags it when the metacharacters come back unescaped in the response body.
   Detection of reflection (not execution), so it reports MEDIUM.
