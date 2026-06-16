@@ -1,9 +1,11 @@
 import argparse
 import json
+from pathlib import Path
 
 from colorama import Fore, Style, init
 
 from .auth import build_session
+from .report import render_html
 from .scanner import scan
 from .types import ScanResult
 
@@ -42,6 +44,11 @@ def main() -> None:
     parser.add_argument("url", help="Target URL to scan")
     parser.add_argument("--json", action="store_true", help="Output raw JSON")
     parser.add_argument(
+        "--html",
+        metavar="FILE",
+        help="Write a self-contained HTML report to FILE",
+    )
+    parser.add_argument(
         "--timeout",
         type=float,
         default=8.0,
@@ -76,9 +83,13 @@ def main() -> None:
 
     result = scan(args.url, timeout=args.timeout, delay=args.delay, session=session)
 
+    if args.html:
+        Path(args.html).write_text(render_html(result), encoding="utf-8")
+        print(f"HTML report written to {args.html}")
+
     if args.json:
         print(json.dumps(result, indent=2))
-    else:
+    elif not args.html:
         print_report(result)
 
 
