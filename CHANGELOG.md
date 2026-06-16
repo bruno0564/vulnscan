@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Authentication: `--bearer`, `--basic user:pass` and repeatable `--header
+  'Name: value'`. Credentials are baked into the `requests.Session` up front
+  (new `auth.build_session`), so every request — main page and probes — carries
+  them.
 - Rate limiting: `--delay` waits N seconds between requests and `--timeout`
   caps each request. Both flow through a new `ScanContext.request()` helper —
   a single choke point used by every check that makes extra HTTP calls.

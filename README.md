@@ -37,6 +37,11 @@ vulnscan https://example.com --json
 
 # Be polite: wait 0.5s between requests and cap each request at 5s
 vulnscan https://example.com --delay 0.5 --timeout 5
+
+# Scan behind authentication
+vulnscan https://example.com --bearer "$TOKEN"
+vulnscan https://example.com --basic admin:s3cret
+vulnscan https://example.com --header "Cookie: session=abc123"
 ```
 
 ## Example output
@@ -92,4 +97,4 @@ pytest                         # tests + coverage
 - [ ] Subdomain enumeration
 - [ ] HTML report output
 - [x] Rate limiting / delay between requests
-- [ ] Auth support (Bearer token, Basic auth)
+- [x] Auth support (Bearer token, Basic auth)
