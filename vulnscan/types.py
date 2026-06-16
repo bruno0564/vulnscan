@@ -39,6 +39,8 @@ class Finding(TypedDict, total=False):
     status: int
     cookie: str
     issues: list[str]
+    param: str  # parámetro de query afectado (checks de inyección)
+    payload: str  # payload que disparó el hallazgo
 
 
 class Summary(TypedDict):

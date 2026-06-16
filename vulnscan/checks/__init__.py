@@ -5,7 +5,7 @@ check quede dado de alta en el registro. Añadir un check nuevo = crear el módu
 y añadir su import aquí.
 """
 
-from . import cookies, cors, directories, headers  # noqa: F401  (import con efecto: registro)
+from . import cookies, cors, directories, headers, xss  # noqa: F401  (import con efecto: registro)
 from .base import ScanContext, all_checks, register
 
 __all__ = ["ScanContext", "all_checks", "register"]

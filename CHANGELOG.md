@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Reflected XSS check: injects a unique marker into each query parameter and
+  flags it when the metacharacters come back unescaped in the response body.
+  Detection of reflection (not execution), so it reports MEDIUM.
 - Authentication: `--bearer`, `--basic user:pass` and repeatable `--header
   'Name: value'`. Credentials are baked into the `requests.Session` up front
   (new `auth.build_session`), so every request — main page and probes — carries
