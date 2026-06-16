@@ -32,7 +32,8 @@ def print_report(result: ScanResult) -> None:
     for f in result["findings"]:
         color = SEVERITY_COLOR.get(f["severity"], "")
         tag = f"[{f['severity'].upper()}]".ljust(10)
-        print(f"{color}{tag}{Style.RESET_ALL} {f.get('header') or f.get('path') or f.get('type')}")
+        title = f.get("header") or f.get("path") or f.get("param") or f.get("type")
+        print(f"{color}{tag}{Style.RESET_ALL} {title}")
         print(f"         {f.get('detail', '')}")
 
 
