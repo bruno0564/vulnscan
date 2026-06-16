@@ -43,6 +43,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Network errors are caught as specific `requests.RequestException` instead of
   bare `except Exception`.
 
+### Fixed
+- Exposed-paths check no longer floods false positives on catch-all / soft-404
+  servers that answer 200 to everything: it now probes a random nonexistent path
+  as a baseline and only reports paths whose response differs from it.
+
 ## [0.1.0] - initial
 
 ### Added
