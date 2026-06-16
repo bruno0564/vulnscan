@@ -39,9 +39,23 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="vulnscan — web vulnerability scanner")
     parser.add_argument("url", help="Target URL to scan")
     parser.add_argument("--json", action="store_true", help="Output raw JSON")
+    parser.add_argument(
+        "--timeout",
+        type=float,
+        default=8.0,
+        metavar="SECONDS",
+        help="Per-request timeout in seconds (default: 8)",
+    )
+    parser.add_argument(
+        "--delay",
+        type=float,
+        default=0.0,
+        metavar="SECONDS",
+        help="Delay between requests in seconds — be polite, avoid rate limits (default: 0)",
+    )
     args = parser.parse_args()
 
-    result = scan(args.url)
+    result = scan(args.url, timeout=args.timeout, delay=args.delay)
 
     if args.json:
         print(json.dumps(result, indent=2))
