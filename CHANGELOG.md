@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Concurrent scanning: checks now run in a thread pool (`--workers N`, default 8),
+  which speeds up I/O-bound scans. Output stays **deterministic** — findings are
+  collected per check in registration order regardless of completion order. Set
+  `--workers 1` to serialise; `--delay` forces sequential so the pacing is honoured.
 - Clickjacking check: flags framable pages, considering **both** `X-Frame-Options`
   and the modern CSP `frame-ancestors` directive (so a CSP-protected site is not
   a false positive). `X-Frame-Options` moved here out of the generic headers check.

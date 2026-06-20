@@ -69,6 +69,14 @@ def main() -> None:
         metavar="SECONDS",
         help="Delay between requests in seconds — be polite, avoid rate limits (default: 0)",
     )
+    parser.add_argument(
+        "--workers",
+        type=int,
+        default=8,
+        metavar="N",
+        help="Run checks concurrently with N workers (default: 8). "
+        "Ignored when --delay is set, to honour the requested pacing.",
+    )
 
     auth = parser.add_argument_group("authentication")
     creds = auth.add_mutually_exclusive_group()
@@ -88,7 +96,13 @@ def main() -> None:
     except ValueError as e:
         parser.error(str(e))
 
-    result = scan(args.url, timeout=args.timeout, delay=args.delay, session=session)
+    result = scan(
+        args.url,
+        timeout=args.timeout,
+        delay=args.delay,
+        workers=args.workers,
+        session=session,
+    )
 
     if args.html:
         Path(args.html).write_text(render_html(result), encoding="utf-8")

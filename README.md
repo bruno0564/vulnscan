@@ -43,7 +43,12 @@ vulnscan https://example.com
 # JSON output
 vulnscan https://example.com --json
 
+# Checks run concurrently by default (8 workers); tune or serialise it
+vulnscan https://example.com --workers 16
+vulnscan https://example.com --workers 1          # fully sequential
+
 # Be polite: wait 0.5s between requests and cap each request at 5s
+# (--delay forces sequential execution so the pacing is actually respected)
 vulnscan https://example.com --delay 0.5 --timeout 5
 
 # Scan behind authentication

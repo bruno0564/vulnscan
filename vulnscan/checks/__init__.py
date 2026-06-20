@@ -19,6 +19,6 @@ from . import (  # noqa: F401  (import con efecto: registro)
     tls,
     xss,
 )
-from .base import ScanContext, all_checks, register
+from .base import Check, ScanContext, all_checks, register
 
-__all__ = ["ScanContext", "all_checks", "register"]
+__all__ = ["Check", "ScanContext", "all_checks", "register"]
