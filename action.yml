@@ -1,0 +1,39 @@
+name: "vulnscan"
+description: "Run the vulnscan web vulnerability scanner and emit a SARIF report for GitHub Code Scanning."
+branding:
+  icon: "shield"
+  color: "red"
+
+inputs:
+  url:
+    description: "Target URL to scan."
+    required: true
+  output:
+    description: "Path to write the SARIF report to."
+    required: false
+    default: "vulnscan.sarif"
+  args:
+    description: "Extra arguments forwarded to vulnscan (e.g. '--delay 0.5 --timeout 5')."
+    required: false
+    default: ""
+
+outputs:
+  sarif:
+    description: "Path to the generated SARIF report."
+    value: ${{ inputs.output }}
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install vulnscan
+      shell: bash
+      # github.action_path is this action's checkout, so vulnscan installs itself.
+      run: pip install "${{ github.action_path }}"
+
+    - name: Run scan
+      shell: bash
+      run: vulnscan "${{ inputs.url }}" --sarif "${{ inputs.output }}" ${{ inputs.args }}

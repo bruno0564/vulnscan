@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- SARIF 2.1.0 output (`--sarif FILE`) for GitHub Code Scanning: findings become
+  alerts in the Security tab, with severity mapped to SARIF levels (high→error,
+  medium→warning, low→note). Ships a composite GitHub Action (`action.yml`) and
+  an example workflow that uploads the report.
 - Concurrent scanning: checks now run in a thread pool (`--workers N`, default 8),
   which speeds up I/O-bound scans. Output stays **deterministic** — findings are
   collected per check in registration order regardless of completion order. Set

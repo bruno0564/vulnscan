@@ -58,6 +58,36 @@ vulnscan https://example.com --header "Cookie: session=abc123"
 
 # Write a self-contained HTML report
 vulnscan https://example.com --html report.html
+
+# Write a SARIF report for GitHub Code Scanning
+vulnscan https://example.com --sarif results.sarif
+```
+
+## GitHub Code Scanning
+
+vulnscan can emit [SARIF](https://sarifweb.azurewebsites.net/), the format GitHub
+ingests for Code Scanning. Findings then show up as alerts in the repository's
+**Security** tab, with severity mapped to SARIF levels (high → error, medium →
+warning, low → note).
+
+A ready-to-use composite action lives in [`action.yml`](action.yml). Minimal
+workflow (see [`.github/workflows/security-scan.yml`](.github/workflows/security-scan.yml)):
+
+```yaml
+permissions:
+  security-events: write
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: bruno0564/vulnscan@v1
+        with:
+          url: https://example.com
+          output: vulnscan.sarif
+      - uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: vulnscan.sarif
 ```
 
 ## Example output

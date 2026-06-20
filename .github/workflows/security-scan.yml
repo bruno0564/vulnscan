@@ -1,0 +1,34 @@
+# Example: run vulnscan against a URL and publish the results to the
+# repository's Security tab via GitHub Code Scanning.
+#
+# It is manual (workflow_dispatch) on purpose — point it at whatever target you
+# are authorised to scan. To scan on a schedule, add a `schedule:` trigger.
+name: Security scan
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "URL to scan"
+        required: true
+        default: "https://example.com"
+
+permissions:
+  security-events: write # required to upload the SARIF report
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run vulnscan
+        uses: ./ # the composite action defined in action.yml
+        with:
+          url: ${{ github.event.inputs.url }}
+          output: vulnscan.sarif
+
+      - name: Upload SARIF to Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: vulnscan.sarif

@@ -6,6 +6,7 @@ from colorama import Fore, Style, init
 
 from .auth import build_session
 from .report import render_html
+from .sarif import render_sarif
 from .scanner import scan
 from .types import ScanResult
 
@@ -54,6 +55,11 @@ def main() -> None:
         "--html",
         metavar="FILE",
         help="Write a self-contained HTML report to FILE",
+    )
+    parser.add_argument(
+        "--sarif",
+        metavar="FILE",
+        help="Write a SARIF 2.1.0 report to FILE (for GitHub Code Scanning)",
     )
     parser.add_argument(
         "--timeout",
@@ -108,9 +114,13 @@ def main() -> None:
         Path(args.html).write_text(render_html(result), encoding="utf-8")
         print(f"HTML report written to {args.html}")
 
+    if args.sarif:
+        Path(args.sarif).write_text(render_sarif(result), encoding="utf-8")
+        print(f"SARIF report written to {args.sarif}")
+
     if args.json:
         print(json.dumps(result, indent=2))
-    elif not args.html:
+    elif not (args.html or args.sarif):
         print_report(result)
 
 
