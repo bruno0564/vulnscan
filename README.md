@@ -154,3 +154,8 @@ pytest                         # tests + coverage
 - [x] HTML report output
 - [x] Rate limiting / delay between requests
 - [x] Auth support (Bearer token, Basic auth)
+- [x] Clickjacking, dangerous HTTP methods, open redirect, TLS and security.txt checks
+- [x] Concurrent scanning (thread pool)
+- [x] SARIF output + GitHub Action for Code Scanning
+- [ ] Authenticated crawling to discover more endpoints
+- [ ] Configurable check selection (`--only` / `--skip`)
