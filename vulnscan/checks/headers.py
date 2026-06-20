@@ -3,10 +3,11 @@
 from ..types import Finding, Severity
 from .base import ScanContext, register
 
+# X-Frame-Options se evalúa en el check de clickjacking, que también tiene en
+# cuenta la directiva CSP `frame-ancestors` (su sustituta moderna).
 SECURITY_HEADERS = {
     "Strict-Transport-Security": "Missing HSTS — forces HTTPS",
     "X-Content-Type-Options": "Missing — allows MIME sniffing attacks",
-    "X-Frame-Options": "Missing — clickjacking possible",
     "Content-Security-Policy": "Missing — XSS protection weakened",
     "Referrer-Policy": "Missing — leaks referrer info",
     "Permissions-Policy": "Missing — browser features unrestricted",

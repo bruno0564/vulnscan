@@ -6,11 +6,17 @@ y añadir su import aquí.
 """
 
 from . import (  # noqa: F401  (import con efecto: registro)
+    clickjacking,
     cookies,
     cors,
     directories,
     headers,
+    methods,
+    redirects,
+    security_txt,
     sqli,
+    subdomains,
+    tls,
     xss,
 )
 from .base import ScanContext, all_checks, register

@@ -6,13 +6,18 @@ Web vulnerability scanner built from scratch in Python. Checks for common miscon
 
 | Check | Severity | Description |
 |---|---|---|
-| Security headers | Medium | HSTS, CSP, X-Frame-Options, X-Content-Type-Options, etc. |
+| Security headers | Medium | HSTS, CSP, X-Content-Type-Options, Referrer-Policy, etc. |
 | Info disclosure headers | Low | Server, X-Powered-By, X-AspNet-Version |
-| Cookie flags | Medium | Secure, HttpOnly, SameSite |
+| Cookie flags | Medium | Secure, HttpOnly, SameSite (case-insensitive, RFC 6265) |
 | CORS misconfiguration | Medium / High | Wildcard origin, origin reflection with credentials |
+| Clickjacking | Medium | Framable page — no X-Frame-Options and no CSP frame-ancestors |
+| Dangerous HTTP methods | Medium | PUT, DELETE, TRACE/TRACK, CONNECT, PATCH advertised via OPTIONS |
+| Open redirect | Medium | Redirect params (next, url…) that bounce to an external host |
 | Exposed paths | Low / Medium | .git, .env, admin panels, debug endpoints, backups |
 | Reflected XSS | Medium | Query params echoed back into the page unescaped |
 | SQL injection | High | DB error signatures triggered by injecting a quote into params |
+| TLS / certificate | Medium / High | Expired/expiring cert, failed verification, obsolete protocol |
+| security.txt | Low | Missing /.well-known/security.txt (RFC 9116) |
 | Subdomains | Low | Common subdomains (api, dev, staging…) that resolve via DNS |
 
 ## Install
@@ -83,9 +88,14 @@ vulnscan/
 │       ├── headers.py    — security and info disclosure headers
 │       ├── cookies.py    — cookie flag analysis
 │       ├── cors.py       — CORS misconfiguration
+│       ├── clickjacking.py — X-Frame-Options / CSP frame-ancestors
+│       ├── methods.py    — dangerous HTTP methods (OPTIONS/Allow)
+│       ├── redirects.py  — open redirect probing
 │       ├── directories.py — common exposed paths
 │       ├── xss.py         — reflected XSS probing
 │       ├── sqli.py        — error-based SQL injection probing
+│       ├── tls.py         — certificate validity / protocol version
+│       ├── security_txt.py — RFC 9116 security.txt presence
 │       └── subdomains.py  — DNS subdomain enumeration
 ├── tests/                — pytest suite (HTTP mocked, no real network)
 └── pyproject.toml        — packaging + ruff/mypy/pytest config

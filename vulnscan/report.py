@@ -41,6 +41,7 @@ def _finding_title(finding: Finding) -> str:
         or finding.get("path")
         or finding.get("param")
         or finding.get("host")
+        or finding.get("method")
         or finding.get("type", "")
     )
 

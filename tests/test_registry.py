@@ -10,6 +10,14 @@ def test_all_known_checks_are_registered() -> None:
         "check_cookies",
         "check_cors",
         "check_directories",
+        "check_xss",
+        "check_sqli",
+        "check_subdomains",
+        "check_clickjacking",
+        "check_methods",
+        "check_redirects",
+        "check_security_txt",
+        "check_tls",
     } <= names
 
 

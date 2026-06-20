@@ -1,11 +1,32 @@
 """Test de integración del orquestador `scan()`."""
 
 import re
+import socket
 
+import pytest
 import requests
 import responses
 
+from vulnscan.checks import tls
 from vulnscan.scanner import scan
+
+
+@pytest.fixture(autouse=True)
+def _no_real_network(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Neutraliza los checks que salen a la red fuera de `requests`.
+
+    `subdomains` resuelve DNS y `tls` abre un socket TLS: `responses` no los
+    intercepta, así que aquí los desactivamos para que la prueba sea offline.
+    """
+
+    def _no_dns(*_args: object, **_kwargs: object) -> str:
+        raise OSError("no DNS in tests")
+
+    def _no_tls(*_args: object, **_kwargs: object) -> tuple[str | None, float | None]:
+        raise OSError("no TLS in tests")
+
+    monkeypatch.setattr(socket, "gethostbyname", _no_dns)
+    monkeypatch.setattr(tls, "_connect", _no_tls)
 
 
 @responses.activate
